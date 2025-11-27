@@ -1,8 +1,8 @@
 print('De ABC-formule!')
 
-a = int(input('Welke waarde heeft a? '))
-b = int(input('Welke waarde heeft b? '))
-c = int(input('Welke waarde heeft c? '))
+a = float(input('Welke waarde heeft a? '))
+b = float(input('Welke waarde heeft b? '))
+c = float(input('Welke waarde heeft c? '))
 D = b**2 - 4*a*c
 
 print(f'D: {D}')

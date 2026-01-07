@@ -1,0 +1,20 @@
+version = 1
+revision = 3
+requires-python = ">=3.11"
+
+[[package]]
+name = "appjar"
+version = "0.94.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/3d/61/68aa666ac80c05f85fc370487493e5eae278b331062b032505020cae7539/appJar-0.94.0.tar.gz", hash = "sha256:0dbd7ce2cb640392cb33ff94fad7318c7b7f2ba3fe111e2ca35cbf119acbda97", size = 556401, upload-time = "2019-05-26T22:00:43.835Z" }
+
+[[package]]
+name = "repl-nix-workspace"
+version = "0.1.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "appjar" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "appjar", specifier = ">=0.94.0" }]

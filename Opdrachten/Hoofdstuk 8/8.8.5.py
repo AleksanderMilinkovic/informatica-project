@@ -1,5 +1,4 @@
 from appJar import gui
-from random import randint
 i = "X"
 
 def btnClick(name):
@@ -15,15 +14,15 @@ def btnClick(name):
 
 
 def btnReset(name):
-    app.clearEntry("btn1")
-    app.clearEntry("btn2")
-    app.clearEntry("btn3")
-    app.clearEntry("btn4")
-    app.clearEntry("btn5")
-    app.clearEntry("btn6")
-    app.clearEntry("btn7")
-    app.clearEntry("btn8")
-    app.clearEntry("btn9")
+    app.setButton("btn1", "  ")
+    app.setButton("btn2", "  ")
+    app.setButton("btn3", "  ")
+    app.setButton("btn4", "  ")
+    app.setButton("btn5", "  ")
+    app.setButton("btn6", "  ")
+    app.setButton("btn7", "  ")
+    app.setButton("btn8", "  ")
+    app.setButton("btn9", "  ")
 
 
 app = gui("TicTacToe", "300x350")

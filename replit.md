@@ -9,7 +9,6 @@ A Python educational project containing programming exercises and a final assign
 - `Opdrachten/` - Programming exercises organized by chapter
   - `Hoofdstuk 6/` - Chapter 6 exercises
   - `Hoofdstuk 8/` - Chapter 8 exercises
-- `tricks.py` - Sample Python script
 
 ## Technology Stack
 - **Language**: Python 3.11

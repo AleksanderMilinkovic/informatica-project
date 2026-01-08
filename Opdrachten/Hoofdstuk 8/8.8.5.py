@@ -12,6 +12,7 @@ def btnClick(name):
 
 
 def btnReset(name):
+    global i
     app.setButton("btn1", "  ")
     app.setButton("btn2", "  ")
     app.setButton("btn3", "  ")
@@ -21,6 +22,7 @@ def btnReset(name):
     app.setButton("btn7", "  ")
     app.setButton("btn8", "  ")
     app.setButton("btn9", "  ")
+    i = "X"
 
 
 app = gui("TicTacToe", "300x350")

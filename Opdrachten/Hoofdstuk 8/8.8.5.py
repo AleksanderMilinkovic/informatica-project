@@ -3,15 +3,12 @@ i = "X"
 
 def btnClick(name):
     global i
-    if app.getButton(name) != "X" and app.getButton(name) != "O":
+    if app.getButton(name) == "  ":
         app.setButton(name, i)
         if i == "X":
             i = "O"
         else:
             i = "X"
-    else:
-        app.setLabel("titel", "Dit vakje is bezet!")
-        app.after(2000, app.setLabel("titel", "TicTacToe"))
 
 
 def btnReset(name):

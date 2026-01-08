@@ -20,7 +20,7 @@ def btnClick(name):
 
 app = gui("Wachtwoordgenerator", "300x300")
 app.addLabel("titel", "Wachtwoordgenerator")
-app.addEntry("wachtwoord", "")
+app.addEntry("wachtwoord")
 app.addButton("Genereren", btnClick)
 app.addCheckBox("Kleine letters")
 app.addCheckBox("Hoofdletters")

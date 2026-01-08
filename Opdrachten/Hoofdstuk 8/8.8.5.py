@@ -10,7 +10,8 @@ def btnClick(name):
         else:
             i = "X"
     else:
-        print("Dit vakje is bezet!") # Veranderen naar GUI-melding
+        app.setLabel("titel", "Dit vakje is bezet!")
+        app.after(2000, app.setLabel("titel", "TicTacToe"))
 
 
 def btnReset(name):
@@ -28,7 +29,6 @@ def btnReset(name):
 app = gui("TicTacToe", "300x350")
 app.setFont(size=20)
 app.addLabel("titel", "TicTacToe", 0, 0, 3)
-app.addLabel("status", "hallo", 1, 0)
 
 app.addNamedButton("  ", "btn1", btnClick, 1, 0)
 app.addNamedButton("  ", "btn2", btnClick, 1, 1)

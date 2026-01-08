@@ -23,7 +23,7 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python Opdrachten/'Hoofdstuk 8'/8.8.5.py"
+args = "python Opdrachten/'Hoofdstuk 8'/8.8.4.py"
 
 [workflows.workflow.metadata]
 outputType = "vnc"

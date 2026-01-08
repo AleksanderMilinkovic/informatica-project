@@ -1,27 +1,10 @@
-from appJar import gui
-app = gui("Demonstratie", "400x200")
-app.go()
-"""
-Vereisten: Een Python-programma dat:
-- werkt met een finite state machine (FSM) oftewel een eindige automaat;
-- gebruikersinteracties simuleert via input en foutmeldingen;
-- een voorraad beheert; - geldinvoer verwerkt en foutafhandeling toepast;
-- logging en statistische analyse uitvoert na simulatie met meerdere gebruikers.
-
-Opdracht A: snackautomaat
-4 producten
-Gebruiker kiest product, voert geld in
-Controle, wisselgeld, voorraad aanpassen
-20 willekeurige klanten simuleren
-Overzicht: aantal verkopen per product, omzet en fouten
-
 import random
 from appJar import gui
 
 # Producten en prijzen
 producten = {
     "Chips": {"prijs": 1.5, "voorraad": 5},
-    "Candy": {"prijs": 1.0, "voorraad": 5},
+    "Autodrop": {"prijs": 1.0, "voorraad": 5},
     "Frisdrank": {"prijs": 2.0, "voorraad": 5},
     "Chocolade": {"prijs": 2.5, "voorraad": 5}
 }
@@ -37,8 +20,7 @@ class FSM:
         self.state = "Wachten op betaling"
     
     def process(self, product, betaalbedrag):
-        global omzet
-        global fouten
+        global omzet, fouten
         
         if self.state == "Wachten op betaling":
             if product not in producten:
@@ -62,7 +44,7 @@ class FSM:
             return f"Product {product} geleverd!"
         
         if self.state == "Fout":
-            return f"Er is een fout opgetreden."
+            return "Er is een fout opgetreden."
 
 # Simulatie van 20 klanten
 def simuleer_automaat():
@@ -72,7 +54,7 @@ def simuleer_automaat():
     
     for klant in range(klanten):
         product = random.choice(list(producten.keys()))
-        betaalbedrag = random.uniform(0.5, 3.0)  # Klant betaalt tussen 0.5 en 3.0
+        betaalbedrag = random.uniform(0.5, 5.0)
         resultaat = fsm.process(product, betaalbedrag)
         
         if "Product geleverd" in resultaat:
@@ -94,7 +76,7 @@ def simuleer_automaat():
 def update_gui():
     simuleer_automaat()
     
-    app.clear()
+    app.emptyCurrentContainer()
     
     app.addLabel("header", "Snackautomaat Simulatie")
     
@@ -113,4 +95,3 @@ app = gui("Snackautomaat Simulatie", "400x400")
 app.addButton("Simuleer Verkoop", update_gui)
 
 app.go()
-"""

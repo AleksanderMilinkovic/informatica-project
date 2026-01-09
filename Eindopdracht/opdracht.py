@@ -2,12 +2,13 @@ import random
 from appJar import gui
 import logging
 
-START = "START"
-SELECT_PRODUCT = "SELECT_PRODUCT"
-CHECK_VOORRAAD = "CHECK_VOORRAAD"
-BETALING = "BETALING"
-AFHANDELEN = "AFHANDELEN"
-EINDE = "EINDE"
+#FSM-states
+A = "START"
+B = "SELECT_PRODUCT"
+C = "CHECK_VOORRAAD"
+D = "BETALING"
+E = "AFHANDELING"
+F = "EIND"
 
 logging.basicConfig(
     level=logging.INFO,
@@ -32,53 +33,53 @@ def simuleer_automaat():
     klanten = 20
 
     for i in range(klanten):
-        state = START
+        state = A
         product = ""
         betaalBedrag = 0
         wisselgeld = 0
 
         logger.info(f"Klant {i + 1} start transactie")
 
-        while state != EINDE:
+        while state != F:
 
-            if state == START:
-                logger.debug("State: START")
-                state = SELECT_PRODUCT
+            if state == A:
+                logger.debug("State: A")
+                state = B
 
-            elif state == SELECT_PRODUCT:
+            elif state == B:
                 product = random.choice(list(producten.keys()))
                 betaalBedrag = round(random.uniform(1.0, 3.5) * 10) / 10
 
                 logger.info(
                     f"Klant {i + 1}: {product} geselecteerd, betaald €{betaalBedrag:.2f}"
                 )
-                state = CHECK_VOORRAAD
+                state = C
 
-            elif state == CHECK_VOORRAAD:
+            elif state == C:
                 if producten[product]["voorraad"] > 0:
                     logger.debug(f"{product} op voorraad")
-                    state = BETALING
+                    state = D
                 else:
                     logger.warning(f"{product} niet op voorraad")
                     fouten.append(f'{product} niet op voorraad')
-                    state = EINDE
+                    state = F
 
-            elif state == BETALING:
+            elif state == D:
                 prijs = producten[product]["prijs"]
                 wisselgeld = betaalBedrag - prijs
 
                 if wisselgeld >= 0:
                     logger.debug("Voldoende betaald")
-                    state = AFHANDELEN
+                    state = E
                 else:
                     logger.warning(
                         f"Onvoldoende betaling voor {product}: "
                         f"€{betaalBedrag:.2f} < €{prijs:.2f}"
                     )
                     fouten.append(f'Onvoldoende betaald voor {product}')
-                    state = EINDE
+                    state = F
 
-            elif state == AFHANDELEN:
+            elif state == E:
                 producten[product]["voorraad"] -= 1
                 verkopen[product] += 1
                 omzet += producten[product]["prijs"]
@@ -92,9 +93,11 @@ def simuleer_automaat():
                 else:
                     logger.info("Geen wisselgeld")
 
-                state = EINDE
+                state = F
 
         logger.info(f"Klant {i + 1} transactie afgerond\n")
+    logger.info(f"Totale omzet: €{omzet:.2f}")
+    logger.info(f"Verkochte producten: {verkopen["Chips"]} chips, {verkopen["Autodrop"]} autodrop, {verkopen["Frisdrank"]} frisdrank, {verkopen["Chocolade"]} chocolade")
         
 
 def update_gui():
@@ -102,7 +105,7 @@ def update_gui():
     
     app.addLabel("header", "Snackautomaat Simulatie")
     
-    app.addLabel("omzet", f"Totale Omzet: {omzet:.2f} EUR")
+    app.addLabel("omzet", f"Totale Omzet: €{omzet:.2f}")
     
     for product, aantal in verkopen.items():
         app.addLabel(f"{product}_verkocht", f"{product}: {aantal} verkocht")
@@ -111,9 +114,11 @@ def update_gui():
         app.addLabel("fouten", "Fouten:")
         for i, fout in enumerate(fouten):
             app.addLabel(f"fout_{i}", fout)
+        app.addLabel("mededeling", "Zie de log voor meer info")
 
 
 app = gui("Snackautomaat Simulatie", "400x400")
 app.addButton("Simuleer Verkoop", update_gui)
+app.setBg("lightgray")
 
 app.go()

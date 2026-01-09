@@ -11,8 +11,8 @@ def buttonKlik(name):
     if name == "Raden":
         if not gameover:
             gebruikersGetal = int(str(app.getEntry("Invoer")))
-            geraden += 1
             afbeelding = f'hangman{geraden}.gif'
+            geraden += 1
             
             if computerGetal < gebruikersGetal:
                 app.setLabel("Status", "Het getal van de computer is kleiner")

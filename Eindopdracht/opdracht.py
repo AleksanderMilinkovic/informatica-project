@@ -1,82 +1,104 @@
 import random
 from appJar import gui
+import logging
 
-# Producten en prijzen
-producten = {
-    "Chips": {"prijs": 1.5, "voorraad": 5},
-    "Autodrop": {"prijs": 1.0, "voorraad": 5},
-    "Frisdrank": {"prijs": 2.0, "voorraad": 5},
-    "Chocolade": {"prijs": 2.5, "voorraad": 5}
-}
+START = "START"
+SELECT_PRODUCT = "SELECT_PRODUCT"
+CHECK_VOORRAAD = "CHECK_VOORRAAD"
+BETALING = "BETALING"
+AFHANDELEN = "AFHANDELEN"
+EINDE = "EINDE"
 
-# Verkoop- en foutstatistieken
-verkopen = {product: 0 for product in producten}
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)-8s | %(message)s",
+    datefmt="%H:%M:%S"
+)
+
+logger = logging.getLogger(__name__)
+verkopen = {"Chips": 0, "Autodrop": 0, "Frisdrank": 0, "Chocolade": 0}
 omzet = 0
 fouten = []
 
-# FSM states
-class FSM:
-    def __init__(self):
-        self.state = "Wachten op betaling"
-    
-    def process(self, product, betaalbedrag):
-        global omzet, fouten
-        
-        if self.state == "Wachten op betaling":
-            if product not in producten:
-                fouten.append(f"Product {product} bestaat niet.")
-                self.state = "Fout"
-            else:
-                prijs = producten[product]["prijs"]
-                if producten[product]["voorraad"] == 0:
-                    fouten.append(f"{product} is uitverkocht.")
-                    self.state = "Fout"
-                elif betaalbedrag < prijs:
-                    fouten.append(f"Te weinig betaald voor {product}.")
-                    self.state = "Fout"
-                else:
-                    producten[product]["voorraad"] -= 1
-                    verkopen[product] += 1
-                    omzet += prijs
-                    self.state = "Product geleverd"
-                    
-        if self.state == "Product geleverd":
-            return f"Product {product} geleverd!"
-        
-        if self.state == "Fout":
-            return "Er is een fout opgetreden."
+producten = {
+    "Chips": {"prijs": 1.5, "voorraad": 5},
+    "Autodrop": {"prijs": 2.5, "voorraad": 5},
+    "Frisdrank": {"prijs": 1.0, "voorraad": 5},
+    "Chocolade": {"prijs": 2.0, "voorraad": 5}
+}
 
-# Simulatie van 20 klanten
 def simuleer_automaat():
-    global omzet, verkopen, fouten
+    global omzet, verkopen, fouten, producten
     klanten = 20
-    fsm = FSM()
-    
-    for klant in range(klanten):
-        product = random.choice(list(producten.keys()))
-        betaalbedrag = random.uniform(0.5, 5.0)
-        resultaat = fsm.process(product, betaalbedrag)
+
+    for i in range(klanten):
+        state = START
+        product = ""
+        betaalBedrag = 0
+        wisselgeld = 0
+
+        logger.info(f"Klant {i + 1} start transactie")
+
+        while state != EINDE:
+
+            if state == START:
+                logger.debug("State: START")
+                state = SELECT_PRODUCT
+
+            elif state == SELECT_PRODUCT:
+                product = random.choice(list(producten.keys()))
+                betaalBedrag = round(random.uniform(1.0, 3.5) * 10) / 10
+
+                logger.info(
+                    f"Klant {i + 1}: {product} geselecteerd, betaald €{betaalBedrag:.2f}"
+                )
+                state = CHECK_VOORRAAD
+
+            elif state == CHECK_VOORRAAD:
+                if producten[product]["voorraad"] > 0:
+                    logger.debug(f"{product} op voorraad")
+                    state = BETALING
+                else:
+                    logger.warning(f"{product} niet op voorraad")
+                    fouten.append(f'{product} niet op voorraad')
+                    state = EINDE
+
+            elif state == BETALING:
+                prijs = producten[product]["prijs"]
+                wisselgeld = betaalBedrag - prijs
+
+                if wisselgeld >= 0:
+                    logger.debug("Voldoende betaald")
+                    state = AFHANDELEN
+                else:
+                    logger.warning(
+                        f"Onvoldoende betaling voor {product}: "
+                        f"€{betaalBedrag:.2f} < €{prijs:.2f}"
+                    )
+                    fouten.append(f'Onvoldoende betaald voor {product}')
+                    state = EINDE
+
+            elif state == AFHANDELEN:
+                producten[product]["voorraad"] -= 1
+                verkopen[product] += 1
+                omzet += producten[product]["prijs"]
+
+                logger.info(
+                    f"{product} verkocht voor €{producten[product]['prijs']:.2f}"
+                )
+
+                if wisselgeld > 0:
+                    logger.info(f"Wisselgeld teruggegeven: €{wisselgeld:.2f}")
+                else:
+                    logger.info("Geen wisselgeld")
+
+                state = EINDE
+
+        logger.info(f"Klant {i + 1} transactie afgerond\n")
         
-        if "Product geleverd" in resultaat:
-            print(f"Klant {klant + 1}: {resultaat} Betaling: {betaalbedrag:.2f} EUR")
-        else:
-            print(f"Klant {klant + 1}: {resultaat} Betaling: {betaalbedrag:.2f} EUR")
 
-    print("\nVerkoopstatistieken:")
-    for product, aantal in verkopen.items():
-        print(f"{product}: {aantal} verkocht")
-    print(f"Totaal omzet: {omzet:.2f} EUR")
-    
-    if fouten:
-        print("\nFouten:")
-        for fout in fouten:
-            print(fout)
-
-# GUI met appJar
 def update_gui():
     simuleer_automaat()
-    
-    app.emptyCurrentContainer()
     
     app.addLabel("header", "Snackautomaat Simulatie")
     
@@ -90,7 +112,7 @@ def update_gui():
         for i, fout in enumerate(fouten):
             app.addLabel(f"fout_{i}", fout)
 
-# Start GUI
+
 app = gui("Snackautomaat Simulatie", "400x400")
 app.addButton("Simuleer Verkoop", update_gui)
 

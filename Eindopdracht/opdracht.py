@@ -97,7 +97,7 @@ def simuleer_automaat():
 
         logger.info(f"Klant {i + 1} transactie afgerond\n")
     logger.info(f"Totale omzet: €{omzet:.2f}")
-    logger.info(f"Verkochte producten: {verkopen["Chips"]} chips, {verkopen["Autodrop"]} autodrop, {verkopen["Frisdrank"]} frisdrank, {verkopen["Chocolade"]} chocolade")
+    logger.info(f"Verkochte producten: {verkopen['Chips']} chips, {verkopen['Autodrop']} autodrop, {verkopen['Frisdrank']} frisdrank, {verkopen['Chocolade']} chocolade")
         
 
 def update_gui():

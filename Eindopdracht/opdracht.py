@@ -10,12 +10,14 @@ D = "BETALING"
 E = "AFHANDELING"
 F = "EIND"
 
+#Format logging
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s | %(levelname)-8s | %(message)s",
     datefmt="%H:%M:%S"
 )
 
+#Initialisatie variabelen
 logger = logging.getLogger(__name__)
 verkopen = {"Chips": 0, "Autodrop": 0, "Frisdrank": 0, "Chocolade": 0}
 omzet = 0
@@ -43,7 +45,7 @@ def simuleer_automaat():
         while state != F:
 
             if state == A:
-                logger.debug("State: A")
+                logger.debug("State: START")
                 state = B
 
             elif state == B:
@@ -51,7 +53,7 @@ def simuleer_automaat():
                 betaalBedrag = round(random.uniform(1.0, 3.5) * 10) / 10
 
                 logger.info(
-                    f"Klant {i + 1}: {product} geselecteerd, betaald €{betaalBedrag:.2f}"
+                    f"Klant {i + 1}: {product} geselecteerd, €{betaalBedrag:.2f} ingevoerd"
                 )
                 state = C
 
@@ -61,7 +63,7 @@ def simuleer_automaat():
                     state = D
                 else:
                     logger.warning(f"{product} niet op voorraad")
-                    fouten.append(f'{product} niet op voorraad')
+                    fouten.append(f"{product} niet op voorraad")
                     state = F
 
             elif state == D:
@@ -76,7 +78,7 @@ def simuleer_automaat():
                         f"Onvoldoende betaling voor {product}: "
                         f"€{betaalBedrag:.2f} < €{prijs:.2f}"
                     )
-                    fouten.append(f'Onvoldoende betaald voor {product}')
+                    fouten.append(f"Onvoldoende betaald voor {product}")
                     state = F
 
             elif state == E:
@@ -85,7 +87,7 @@ def simuleer_automaat():
                 omzet += producten[product]["prijs"]
 
                 logger.info(
-                    f"{product} verkocht voor €{producten[product]['prijs']:.2f}"
+                    f"{product} verkocht voor €{producten[product]["prijs"]:.2f}"
                 )
 
                 if wisselgeld > 0:
@@ -97,7 +99,10 @@ def simuleer_automaat():
 
         logger.info(f"Klant {i + 1} transactie afgerond\n")
     logger.info(f"Totale omzet: €{omzet:.2f}")
-    logger.info(f"Verkochte producten: {verkopen['Chips']} chips, {verkopen['Autodrop']} autodrop, {verkopen['Frisdrank']} frisdrank, {verkopen['Chocolade']} chocolade")
+    logger.info(f"Verkochte producten: {verkopen['Chips']} chips,"
+                f"{verkopen['Autodrop']} autodrop,"
+                f"{verkopen['Frisdrank']} frisdrank,"
+                f"{verkopen['Chocolade']} chocolade")
         
 
 def update_gui():
@@ -114,7 +119,7 @@ def update_gui():
         app.addLabel("fouten", "Fouten:")
         for i, fout in enumerate(fouten):
             app.addLabel(f"fout_{i}", fout)
-        app.addLabel("mededeling", "Zie de log voor meer info")
+        app.addLabel("mededeling", "Zie de log voor uitgebreide info")
 
 
 app = gui("Snackautomaat Simulatie", "400x400")

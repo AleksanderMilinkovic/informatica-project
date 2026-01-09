@@ -123,7 +123,7 @@ def update_gui():
 
 
 app = gui("Snackautomaat Simulatie", "400x400")
-app.addButton("Simuleer Verkoop", update_gui)
+app.addButton("Simuleer verkoop", update_gui)
 app.setBg("lightgray")
 
 app.go()
